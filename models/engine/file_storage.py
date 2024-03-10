@@ -1,72 +1,37 @@
+#!/usr/bin/ppython3
+import json
+from models.base_model import BaseModel
+
 class FileStorage:
-    """Class where data is stored and can be retrieved"""
+    """Class for serializing and deserializing instances to/from JSON file"""
 
-    # Existing methods...
+    __file_path = "file.json"
+    __objects = {}
 
-    def classes(self):
-        """Returns a dictionary of classes and their references"""
-        from models.base_model import BaseModel
-        from models.user import User
-        from models.state import State
-        from models.city import City
-        from models.amenity import Amenity
-        from models.review import Review
-        from models.place import Place
+    def all(self):
+        """Returns the dictionary __objects"""
+        return self.__objects
 
-        classes = {
-            "BaseModel": BaseModel,
-            "User": User,
-            "State": State,
-            "City": City,
-            "Amenity": Amenity,
-            "Place": Place,
-            "Review": Review,
-        }
+    def new(self, obj):
+        """Sets in __objects the obj with key <obj class name>.id"""
+        key = "{}.{}".format(obj.__class__.__name__, obj.id)
+        self.__objects[key] = obj
 
-        return classes
+    def save(self):
+        """Serializes __objects to the JSON file"""
+        new_dict = {}
+        for key, value in self.__objects.items():
+            new_dict[key] = value.to_dict()
+        with open(self.__file_path, "w") as f:
+            json.dump(new_dict, f)
 
-    def attributes(self):
-        """Returns attributes and their types for classname"""
-        attributes = {
-            "BaseModel": {
-                "id": str,
-                "created_at": datetime.datetime,
-                "updated_at": datetime.datetime
-            },
-            "User": {
-                "email": str,
-                "password": str,
-                "first_name": str,
-                "last_name": str
-            },
-            "State": {
-                "name": str
-            },
-            "City": {
-                "state_id": str,
-                "name": str
-            },
-            "Amenity": {
-                "name": str
-            },
-            "Place": {
-                "city_id": str,
-                "user_id": str,
-                "name": str,
-                "description": str,
-                "number_rooms": int,
-                "number_bathrooms": int,
-                "max_guest": int,
-                "price_by_night": int,
-                "latitude": float,
-                "longitude": float,
-                "amenity_ids": list
-            },
-            "Review": {
-                "place_id": str,
-                "user_id": str,
-                "text": str
-            }
-        }
-
-        return attributes
+    def reload(self):
+        """Deserializes the JSON file to __objects"""
+        try:
+            with open(self.__file_path, "r") as f:
+                objects_dict = json.load(f)
+                for key, value in objects_dict.items():
+                    class_name, obj_id = key.split(".")
+                    self.__objects[key] = eval(class_name)(**value)
+        except FileNotFoundError:
+            pass
