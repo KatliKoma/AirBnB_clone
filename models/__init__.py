@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-module executes when models package is imported
+Initializes the package.
 """
 
 
