@@ -1,4 +1,4 @@
-# Import all the classes
+__init__.py# Import all the classes
 from models.base_model import BaseModel
 
 # should be imported when using 'from models import *'
