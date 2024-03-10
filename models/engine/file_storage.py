@@ -2,12 +2,13 @@
 """Module containing the FileStorage class."""
 import json
 import os
+import datetime
 
 class FileStorage:
 
     """Class where data is stored and can be retreived"""
     __objects = {}
-    __file_path = str - path to "file.json"
+    __file_path = "file.json"
 
     def all(self):
         """returns the dictionary __objects"""
@@ -20,7 +21,7 @@ class FileStorage:
 
     def save(self):
         """serializes __objects to the JSON file (path: __file_path)"""
-        with open(FileStorage.__file_path, "w", encoding"=utf-8" as f:
+        with open(FileStorage.__file_path, "w", encoding="utf-8") as f:
             d = {k: v.to_dict() for k, v in FileStorage.__objects.items()}
             json.dump(d, f)
 
@@ -33,13 +34,13 @@ class FileStorage:
 
     def classes(self):
         """returns a dictionarr of classes and their references"""
-            from models.base_model import BaseModel
-            from models.user import User
-            from models.state import State
-            from models.city import City
-            from models.amenity import Amenity
-            from models.review import Review
-            from models.place import Place
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.review import Review
+        from models.place import Place
             
             classes = {"BaseModel": BaseModel,
                 "User": User,
