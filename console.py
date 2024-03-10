@@ -67,7 +67,10 @@ class HBNBCommand(cmd.Cmd):
         objects = storage.all()
         if arg:
             try:
-                objects_list = [str(objects[obj]) for obj in objects if type(objects[obj]).__name__ == arg]
+                objects_list = [
+                        str(objects[obj]) for obj in objects if
+                        type(objects[obj]).__name__ == arg
+                        ]
                 print(objects_list)
                 return
             except NameError:
@@ -102,18 +105,49 @@ class HBNBCommand(cmd.Cmd):
         except IndexError:
             print("** attribute name missing **")
         except KeyError:
+            if key not in objects:
+                print("** no instance found **")
+                return
+            instance = objects[key]
+            setattr(instance, attribute_name, attribute_value)
+            instance.save()
+        except ValueError:
+            print("** instance id missing **")
+        except IndexError:
+            print("** attribute name missing **")
+        except KeyError:
             print("** class doesn't exist **")
         except AttributeError:
             print("** value missing **")
 
-    def do_quit(self, arg):
-        """Quit command to exit the program"""
-        return True
 
-    def do_EOF(self, arg):
-        """EOF command to exit the program"""
-        print()
-        return True
+def do_quit(self, arg):
+    """Quit command to exit the program"""
+    return True
+
+
+def do_EOF(self, arg):
+    """EOF command to exit the program"""
+    print()
+    return True
+
+    if __name__ == '__main__':
+        HBNBCommand().cmdloop()
+        print("** class doesn't exist **")
+
+        except AttributeError:
+            print("** value missing **")
+
+
+def do_quit(self, arg):
+    """Quit command to exit the program"""
+    return True
+
+
+def do_EOF(self, arg):
+    """EOF command to exit the program"""
+    print()
+    return True
 
 
 if __name__ == '__main__':
