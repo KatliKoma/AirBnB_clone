@@ -7,6 +7,7 @@ import json
 from models.base_model import BaseModel
 from models import storage
 
+
 class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
 
@@ -78,7 +79,8 @@ class HBNBCommand(cmd.Cmd):
         elif words[0] not in storage.classes():
             print("** class doesn't exist **")
         else:
-            matches = [k for k in storage.all() if k.startswith(words[0] + '.')]
+            matches = [k for k in storage.all()
+                       if k.startswith(words[0] + '.')]
             print(len(matches))
 
     def do_update(self, line):
@@ -196,6 +198,7 @@ class HBNBCommand(cmd.Cmd):
                         value = attributes[attribute](value)
                     setattr(storage.all()[key], attribute, value)
                 storage.all()[key].save()
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
