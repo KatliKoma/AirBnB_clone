@@ -1,67 +1,72 @@
-#!/usr/bin/python3
-"""
-Module for managing serialization and deserialization of data
-"""
-import json
-import os
-from models.base_model import BaseModel
-from models.user import User
-from models.amenity import Amenity
-from models.place import Place
-from models.review import Review
-from models.state import State
-from models.city import City
-
-
 class FileStorage:
-    """
-    FileStorage class manages storage, serialization, and deserialization of data
-    """
-    __file_path = "file.json"
+    """Class where data is stored and can be retrieved"""
 
-    __objects = {}
+    # Existing methods...
 
-    def save(self):
-        """
-        Serializes the objects dictionary into JSON format and saves it to the specified file.
-        """
-        all_objects = FileStorage.__objects
+    def classes(self):
+        """Returns a dictionary of classes and their references"""
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.review import Review
+        from models.place import Place
 
-        object_dict = {}
+        classes = {
+            "BaseModel": BaseModel,
+            "User": User,
+            "State": State,
+            "City": City,
+            "Amenity": Amenity,
+            "Place": Place,
+            "Review": Review,
+        }
 
-        for obj_key, obj_value in all_objects.items():
-            object_dict[obj_key] = obj_value.to_dict()
+        return classes
 
-        with open(FileStorage.__file_path, "w", encoding="utf-8") as file:
-            json.dump(object_dict, file)
+    def attributes(self):
+        """Returns attributes and their types for classname"""
+        attributes = {
+            "BaseModel": {
+                "id": str,
+                "created_at": datetime.datetime,
+                "updated_at": datetime.datetime
+            },
+            "User": {
+                "email": str,
+                "password": str,
+                "first_name": str,
+                "last_name": str
+            },
+            "State": {
+                "name": str
+            },
+            "City": {
+                "state_id": str,
+                "name": str
+            },
+            "Amenity": {
+                "name": str
+            },
+            "Place": {
+                "city_id": str,
+                "user_id": str,
+                "name": str,
+                "description": str,
+                "number_rooms": int,
+                "number_bathrooms": int,
+                "max_guest": int,
+                "price_by_night": int,
+                "latitude": float,
+                "longitude": float,
+                "amenity_ids": list
+            },
+            "Review": {
+                "place_id": str,
+                "user_id": str,
+                "text": str
+            }
+        }
 
-    def reload(self):
-        """
-        Deserializes the JSON file and restores the objects dictionary.
-        """
-        if os.path.isfile(FileStorage.__file_path):
-            with open(FileStorage.__file_path, "r", encoding="utf-8") as file:
-                try:
-                    object_dict = json.load(file)
-
-                    for key, value in object_dict.items():
-                        class_name, obj_id = key.split('.')
-                        cls = eval(class_name)
-                        instance = cls(**value)
-                        FileStorage.__objects[key] = instance
-                except Exception:
-                    pass
-
-    def new(self, obj):
-        """
-        Adds a new object to the objects dictionary.
-        """
-        class_name = obj.__class__.__name__
-        key = "{}.{}".format(class_name, obj.id)
-        FileStorage.__objects[key] = obj
-
-    def all(self):
-        """
-        Returns the objects dictionary.
-        """
-        return FileStorage.__objects
+        return attributes
