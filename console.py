@@ -207,87 +207,20 @@ def pre_update(classname, method_value):
         return 0
 
 
-class HBNBdata(cmd.Cmd):
-    '''
-        Command Line Class
-    '''
-    prompt = "(hbnb) "
-    classDict = {
-        "BaseModel": BaseModel,
-        "User": User,
-        "City": City,
-        "State": State,
-        "Review": Review,
-        "Amenity": Amenity,
-        "Place": Place
-    }
-
-    def default(self, line):
-        '''
-            Method that checks if the input contains dot, if false
-            print the message error
-        '''
-
-        if '.' not in line:
-            return cmd.Cmd.default(self, line)
-
-    def onecmd(self, line):
-        '''
-        Every command given will pass for this :)
-        '''
-        if '.' in line and line.split(' ')[0] not in actions:
-            parsed = line.split('.')
-            if pre_method(parsed):
-                if parsed[1] == "all()":
-                    pre_all(parsed)
-                elif parsed[1] == "count()":
-                    pre_count(parsed)
-                elif pre_parse(parsed[1])[0] == "show":
-                    if pre_parse(parsed[1])[1] == '':
-                        return cmd.Cmd.default(self, line)
-                    else:
-                        pre_show(parsed[0], pre_parse(parsed[1]))
-                elif pre_parse(parsed[1])[0] == "destroy":
-                    if pre_parse(parsed[1])[1] == '':
-                        return cmd.Cmd.default(self, line)
-                    else:
-                        pre_destroy(parsed[0], pre_parse(parsed[1]))
-                elif pre_parse(parsed[1])[0] == "update":
-                    if pre_parse(parsed[1])[1] == '':
-                        return cmd.Cmd.default(self, line)
-                    else:
-                        pre_update(parsed[0], pre_parse(parsed[1], True))
-            else:
-                return cmd.Cmd.default(self, line)
-
-        return cmd.Cmd.onecmd(self, line)
-
+class HBNBCommand(cmd.Cmd):
+    classes = {"BaseModel": BaseModel, "User": User}
+    
     def do_create(self, args):
-        """
-        Create - Create new model of a class
-        -----------------------------------------------------
-        available models:
-        - BaseModel
-        - Amenity
-        - City
-        - Place
-        - Review
-        - User
-        - State
-        -----------------------------------------------------
-        @ usage - > <data> <model> {ex: create BaseModel}
-
-        """
-        if len(args) < 2:
-            print('** class name missing **')
-        else:
-            try:
-                new = eval(args)()
-                new.save()
-                print(new.id)
-            except (NameError, SyntaxError):
-                print("** class doesn't exist **")
-                pass
+        args_list = args.split()
+        if len(args_list) == 0:
+            print("** class name missing **")
+            return
+        if args_list[0] not in self.classes:
+            print("** class doesn't exist **")
+            return
+        new_instance = self.classes[args_list[0]]()
+        new_instance.save()
+        print(new_instance.id)
 
     def do_show(self, args):
         """
