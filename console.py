@@ -127,7 +127,7 @@ class HBNBCommand(cmd.Cmd):
         """ EOF command to exit the program """
         return True
 
-    def emptyline(self):
+    def emptyline(self, line):
         """ When the comand line is empty and it's typed """
         pass
 
