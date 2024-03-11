@@ -24,8 +24,9 @@ class BaseModel:
             if 'updated_at' in kwargs:
                 self.updated_at = datetime.fromisoformat(kwargs['updated_at'])
 
-    def __str__(self):
-        return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)
+        def __str__(self):
+            return ("[{}] ({}) {}"
+                    .format(self.__class__.__name__, self.id, self.__dict__))
 
     def save(self):
         """
@@ -34,7 +35,6 @@ class BaseModel:
          """
         self.updated_at = datetime.now()
         models.storage.save()
-
 
     def to_dict(self):
         dictionary = self.__dict__.copy()
