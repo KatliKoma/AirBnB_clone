@@ -6,63 +6,57 @@ import uuid
 from datetime import datetime
 import models
 
+    """
+        Initializes a new instance of the BaseModel class.
+        If 'kwargs' is provided, it populates the
+        instance with the key-value pairs in 'kwargs',
+        converting 'created_at' and 'updated_at'
+        to datetime objects if necessary.
+        """
 class BaseModel:
     def __init__(self, *args, **kwargs):
-        """
-        Initializes a new instance of the BaseModel class.
-        If 'kwargs' is provided, it populates the instance with the key-value pairs in 'kwargs',
-        converting 'created_at' and 'updated_at' to datetime objects if necessary.
-        Otherwise, it sets default values for 'id', 'created_at', and 'updated_at'.
-        """
         time_format = "%Y-%m-%dT%H:%M:%S.%f"
-        self.id = str(uuid.uuid4())  # Generate a unique ID for each new instance.
-        self.created_at = datetime.utcnow()  # Record the time of creation.
-        self.updated_at = datetime.utcnow()  # Set the time of last update to now.
+        self.id = str(uuid.uuid4())
+        self.created_at = datetime.utcnow()
+        self.updated_at = datetime.utcnow()
         
-        # Check if 'kwargs' was provided to set instance attributes.
         if kwargs:
             for key, value in kwargs.items():
                 if key == "__class__":
-                    continue  # Skip the '__class__' key.
-                elif key in ("created_at", "updated_at"):
-                    # Convert string datetime to a datetime object.
+                    continue
+                elif key == "created_at" or key == "updated_at":
                     setattr(self, key, datetime.strptime(value, time_format))
                 else:
-                    # Set other attributes directly.
                     setattr(self, key, value)
 
-        # Register the new instance with the storage mechanism.
         models.storage.new(self)
 
     def save(self):
         """
-        Updates 'updated_at' with the current time and signals the storage mechanism to save the instance.
+
         """
-        self.updated_at = datetime.utcnow()  # Update the time of last update.
-        models.storage.save()  # Save the instance.
+        self.updated_at = datetime.utcnow()
+        models.storage.save()
 
     def to_dict(self):
         """
-        Returns a dictionary representation of the instance, including the instance's class name
-        and converting 'created_at' and 'updated_at' to string format.
+
         """
-        inst_dict = self.__dict__.copy()  # Create a copy of the instance's dictionary.
-        inst_dict["__class__"] = self.__class__.__name__  # Add the class name.
-        # Convert 'created_at' and 'updated_at' to ISO format strings.
+        inst_dict = self.__dict__.copy()
+        inst_dict["__class__"] = self.__class__.__name__
         inst_dict["created_at"] = self.created_at.isoformat()
         inst_dict["updated_at"] = self.updated_at.isoformat()
 
-        return inst_dict  # Return the modified dictionary.
+        return inst_dict
 
     def __str__(self):
         """
-        Returns a string representation of the instance, including the class name, id, and attributes.
+
         """
-        class_name = self.__class__.__name__  # Get the name of the class.
-        # Format the string representation.
+        class_name = self.__class__.__name__
         return "[{}] ({}) {}".format(class_name, self.id, self.__dict__)
 
-# Example code to demonstrate how to use the BaseModel class.
+
 if __name__ == "__main__":
     my_model = BaseModel()
     my_model.name = "My_First_Model"
