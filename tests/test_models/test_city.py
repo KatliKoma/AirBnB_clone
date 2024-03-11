@@ -1,46 +1,60 @@
 #!/usr/bin/python3
+"""Defines unittests for models/city.py."""
+import os
+import models
 import unittest
+from models.base_model import BaseModel
 from models.city import City
-"""
-Unittest Module for City class
-"""
 
+class TestCity(unittest.TestCase):
+    """Unittests for testing the City class."""
 
-class TestUser(unittest.TestCase):
-    ''' Unittest for City class '''
+    @classmethod
+    def setUpClass(cls):
+        """City testing setup.
+        Creates a new instance of City.
+        """
+        cls.city = City()
+        cls.city.name = "San Francisco"
+        cls.city.state_id = "CA"
 
-    def test_object_Instantiation(self):
-        ''' instantiates class '''
-        self.city = City()
+    @classmethod
+    def tearDownClass(cls):
+        """City testing teardown.
+        Deletes the instance and attempts to remove the file if it exists.
+        """
+        del cls.city
+        try:
+            os.remove("file.json")
+        except FileNotFoundError:
+            pass
 
-    def testattr(self):
-        ''' test Class: City attributes '''
-        self.city = City()
+    def test_instance(self):
+        """Test if the created instance is indeed a City object."""
+        self.assertIsInstance(self.city, City)
+
+    def test_inheritance(self):
+        """Test if City inherits from BaseModel."""
+        self.assertTrue(issubclass(type(self.city), BaseModel))
+
+    def test_attributes(self):
+        """Test if City instance has the necessary attributes."""
+        self.assertTrue(hasattr(self.city, "id"))
         self.assertTrue(hasattr(self.city, "created_at"))
         self.assertTrue(hasattr(self.city, "updated_at"))
-        self.assertFalse(hasattr(self.city, "random_attr"))
         self.assertTrue(hasattr(self.city, "name"))
-        self.assertTrue(hasattr(self.city, "id"))
-        self.assertEqual(self.city.name, "")
-        self.assertEqual(self.city.state_id, "")
-        self.city.name = "WonderLand"
-        self.city.state_id = "Won67L0nd"
-        self.assertEqual(self.city.name, "WonderLand")
-        self.assertEqual(self.city.state_id, "Won67L0nd")
-        self.assertEqual(self.city.__class__.__name__, "City")
+        self.assertTrue(hasattr(self.city, "state_id"))
+        self.assertEqual(self.city.name, "San Francisco")
+        self.assertEqual(self.city.state_id, "CA")
 
-    def testsave(self):
-        ''' testing method: save '''
-        self.city = City()
-        self.city.save()
-        self.assertTrue(hasattr(self.city, "updated_at"))
+    def test_to_dict(self):
+        """Test conversion of object attributes to dictionary for json."""
+        city_dict = self.city.to_dict()
+        self.assertEqual(city_dict["name"], "San Francisco")
+        self.assertEqual(city_dict["__class__"], "City")
+        self.assertEqual(city_dict["state_id"], "CA")
+        self.assertTrue("created_at" in city_dict)
+        self.assertTrue("updated_at" in city_dict)
 
-    def teststr(self):
-        ''' testing __str__ return format of BaseModel '''
-        self.city = City()
-        s = "[{}] ({}) {}".format(self.city.__class__.__name__,
-                                  str(self.city.id), self.city.__dict__)
-        self.assertEqual(print(s), print(self.city))
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
