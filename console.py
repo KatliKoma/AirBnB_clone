@@ -54,7 +54,7 @@ class HBNBCommand(cmd.Cmd):
         spaces + ENTER shouldn’t execute anything."""
         pass
 
-    def default(self, line):
+    def default(self, arg):
         """Override default method to handle empty lines and spaces."""
         argdict = {
             "all": self.do_all,
