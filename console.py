@@ -11,6 +11,7 @@ from models.amenity import Amenity
 from models.review import Review
 from shlex import split
 
+
 class_names = {
     "BaseModel": BaseModel,
     "User": User,
@@ -20,6 +21,7 @@ class_names = {
     "Amenity": Amenity,
     "Review": Review
 }
+
 
 class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) '
@@ -54,7 +56,8 @@ class HBNBCommand(cmd.Cmd):
             print(e)
 
     def do_show(self, arg):
-        """Prints the string representation of an instance based on the class name and id."""
+        """Prints the string representation of an
+        instance based on the class name and id."""
         args = split(arg)
         if len(args) == 0:
             print("** class name missing **")
@@ -93,7 +96,8 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
 
     def do_all(self, arg):
-        """Prints all string representation of all instances based or not on the class name."""
+        """Prints all string representation of all
+        instances based or not on the class name."""
         args = split(arg)
         all_objs = storage.all()
         obj_list = []
@@ -106,7 +110,8 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
 
     def do_update(self, arg):
-        """Updates an instance based on the class name and id by adding or updating attribute."""
+        """Updates an instance based on the class
+        name and id by adding or updating attribute."""
         args = split(arg)
         if len(args) == 0:
             print("** class name missing **")
@@ -130,6 +135,7 @@ class HBNBCommand(cmd.Cmd):
             return
         setattr(all_objs[key], args[2], args[3].strip('"\''))
         all_objs[key].save()
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()

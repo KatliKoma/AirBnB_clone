@@ -5,6 +5,7 @@ import unittest
 from models.base_model import BaseModel
 from models.place import Place
 
+
 class TestPlace(unittest.TestCase):
     """Unittests for testing the Place class."""
 
@@ -29,7 +30,8 @@ class TestPlace(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         """Place testing teardown.
-        Deletes the instance and attempts to remove the file if it exists.
+        Deletes the instance and attempts to
+        remove the file if it exists.
         """
         del cls.place
         try:
@@ -46,7 +48,8 @@ class TestPlace(unittest.TestCase):
         self.assertTrue(issubclass(type(self.place), BaseModel))
 
     def test_attributes(self):
-        """Test if Place instance has the necessary attributes and correct values."""
+        """Test if Place instance has the
+        necessary attributes and correct values."""
         self.assertTrue(hasattr(self.place, "name"))
         self.assertTrue(hasattr(self.place, "city_id"))
         self.assertTrue(hasattr(self.place, "user_id"))
@@ -69,6 +72,7 @@ class TestPlace(unittest.TestCase):
         self.assertEqual(self.place.latitude, 37.773972)
         self.assertEqual(self.place.longitude, -122.431297)
         self.assertEqual(self.place.amenity_ids, ["001", "002"])
+
 
 if __name__ == "__main__":
     unittest.main()

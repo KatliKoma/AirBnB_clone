@@ -5,6 +5,7 @@ import unittest
 from models.base_model import BaseModel
 from models.state import State
 
+
 class TestState(unittest.TestCase):
     """Unittests for testing the State class."""
 
@@ -36,12 +37,14 @@ class TestState(unittest.TestCase):
         self.assertTrue(issubclass(type(self.state), BaseModel))
 
     def test_attributes(self):
-        """Test if State instance has the necessary attributes and correct values."""
+        """Test if State instance has the necessary
+        attributes and correct values."""
         self.assertTrue(hasattr(self.state, "id"))
         self.assertTrue(hasattr(self.state, "created_at"))
         self.assertTrue(hasattr(self.state, "updated_at"))
         self.assertTrue(hasattr(self.state, "name"))
         self.assertEqual(self.state.name, "California")
+
 
 if __name__ == "__main__":
     unittest.main()

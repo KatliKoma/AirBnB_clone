@@ -5,6 +5,7 @@ import unittest
 from models.base_model import BaseModel
 from models.user import User
 
+
 class TestUser(unittest.TestCase):
     """Unittests for testing the User class."""
 
@@ -39,7 +40,8 @@ class TestUser(unittest.TestCase):
         self.assertTrue(issubclass(type(self.user), BaseModel))
 
     def test_attributes(self):
-        """Test if User instance has the necessary attributes and correct values."""
+        """Test if User instance has the necessary
+        attributes and correct values."""
         self.assertTrue(hasattr(self.user, "email"))
         self.assertTrue(hasattr(self.user, "password"))
         self.assertTrue(hasattr(self.user, "first_name"))
@@ -56,6 +58,7 @@ class TestUser(unittest.TestCase):
         self.assertEqual(user_dict["__class__"], "User")
         self.assertTrue("created_at" in user_dict)
         self.assertTrue("updated_at" in user_dict)
+
 
 if __name__ == "__main__":
     unittest.main()

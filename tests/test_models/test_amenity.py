@@ -36,5 +36,6 @@ class TestAmenity(unittest.TestCase):
                                   str(self.amenity.id), self.amenity.__dict__)
         self.assertEqual(print(s), print(self.amenity))
 
+
 if __name__ == '__main__':
     unittest.main()

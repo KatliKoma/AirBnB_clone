@@ -3,6 +3,7 @@ import unittest
 import models
 from models.base_model import BaseModel
 
+
 class TestBaseModel(unittest.TestCase):
 
     def test_instance_creation(self):
@@ -11,6 +12,7 @@ class TestBaseModel(unittest.TestCase):
         self.assertTrue(hasattr(instance, "id"))
         self.assertTrue(hasattr(instance, "created_at"))
         self.assertTrue(hasattr(instance, "updated_at"))
+
 
 if __name__ == "__main__":
     unittest.main()

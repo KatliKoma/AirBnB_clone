@@ -6,6 +6,7 @@ import unittest
 from models.base_model import BaseModel
 from models.city import City
 
+
 class TestCity(unittest.TestCase):
     """Unittests for testing the City class."""
 
@@ -55,6 +56,7 @@ class TestCity(unittest.TestCase):
         self.assertEqual(city_dict["state_id"], "CA")
         self.assertTrue("created_at" in city_dict)
         self.assertTrue("updated_at" in city_dict)
+
 
 if __name__ == "__main__":
     unittest.main()

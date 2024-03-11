@@ -64,6 +64,7 @@ class BaseModel:
     def to_dict(self):
         """Returns a dictionary containing all
         keys/values of __dict__ of the instance."""
+        dictionary = dict(self.__dict__)
         dictionary = OrderedDict()
         dictionary['my_number'] = self.my_number if hasattr(
                 self, 'my_number'
