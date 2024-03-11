@@ -35,22 +35,21 @@ def parse(arg):
 class HBNBCommand(cmd.Cmd):
     """Defines the HolbertonBnB command interpreter."""
     prompt = "(hbnb) "
-    __classes =
-    {"BaseModel", "User", "State", "City", "Place", "Amenity", "Review"}
+    __classes = {"BaseModel", "User", "State", "City", "Place", "Amenity", "Review"}
 
     def do_quit(self, arg):
         """Quit command to exit the program."""
         print("Exiting the program.")
-        return True
+        return True  # Returning True exits the cmdloop
 
     def do_EOF(self, arg):
         """EOF command to exit the program."""
         print("Exiting the program.")
-        return True
+        return True  # Returning True exits the cmdloop
 
     def emptyline(self):
-        """Do nothing upon receiving an empty line."""
-        pass
+        """An empty line + ENTER or an empty line + spaces + ENTER shouldn’t execute anything."""
+        pass  # Do nothing
 
     def do_help(self, arg):
         """Help command to display available commands."""
@@ -71,6 +70,8 @@ class HBNBCommand(cmd.Cmd):
             print("Documented commands (type help <topic>):")
             print("=========================================")
             cmd.Cmd.do_help(self, arg)
+
+    # Additional command methods can be added here
 
 
 if __name__ == "__main__":
