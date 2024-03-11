@@ -27,6 +27,14 @@ class BaseModel:
         def __str__(self):
             return ("[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__))
 
+    def __repr__(self):
+        """ Define method repr that return
+            string representation
+        """
+        return "[{:s}] ({:s}) {}".format(
+            self.__class__.__name__, self.id, self.__dict__)
+
+
     def save(self):
         """
         method that updates the public instance attribute updated_at
