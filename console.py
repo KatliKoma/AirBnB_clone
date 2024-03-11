@@ -1,99 +1,136 @@
 #!/usr/bin/python3
-"""Defines the HBnB console."""
+""" Defines the HBnB console. """
 import cmd
-import re
-from shlex import split
-from models import storage
+import shlex
+import models
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
 from models.city import City
-from models.place import Place
 from models.amenity import Amenity
+from models.place import Place
 from models.review import Review
-
-
-def parse(arg):
-    """Parse command arguments."""
-    curly_braces = re.search(r"\{(.*?)\}", arg)
-    brackets = re.search(r"\[(.*?)\]", arg)
-    if curly_braces is None:
-        if brackets is None:
-            return [i.strip(",") for i in split(arg)]
-        else:
-            lexer = split(arg[:brackets.span()[0]])
-            retl = [i.strip(",") for i in lexer]
-            retl.append(brackets.group())
-            return retl
-    else:
-        lexer = split(arg[:curly_braces.span()[0]])
-        retl = [i.strip(",") for i in lexer]
-        retl.append(curly_braces.group())
-        return retl
+""" import moduls """
 
 
 class HBNBCommand(cmd.Cmd):
-    """Defines the HolbertonBnB command interpreter."""
+    """ Defines the HolbertonBnB command interpreter. """
     prompt = "(hbnb) "
-    __classes = {
-            "BaseModel", "User", "State", "City", "Place", "Amenity", "Review"
-            }
+    list_class = ["BaseModel", "User", "State", "City",
+                  "Amenity", "Place", "Review"]
+    list_err = ["** class name missing **", "** class doesn't exist **",
+                "** instance id missing **", "** no instance found **",
+                "** attribute name missing **", "** value missing **"]
 
-    def do_quit(self, arg):
-        """Quit command to exit the program."""
-        print("Exiting the program.")
+    def do_create(self, line):
+
+        my_list = list(line.split())
+        if line == "":
+            print(self.list_err[0])
+        elif my_list[0] in self.list_class:
+            obj = eval(my_list[0])()
+            print(obj.id)
+            obj.save()
+        else:
+            print(self.list_err[1])
+
+    def do_show(self, line):
+        """object by id """
+        my_list = list(line.split())
+        if line == "":
+            print(self.list_err[0])
+        elif my_list[0] not in self.list_class:
+            print(self.list_err[1])
+        elif len(my_list) == 1:
+            print(self.list_err[2])
+        else:
+            my_dic = models.storage.all()
+            if (my_list[0] + "." + my_list[1]) in my_dic.keys():
+                print(my_dic[my_list[0] + "." + my_list[1]])
+            else:
+                print(self.list_err[3])
+
+    def do_destroy(self, line):
+        """ delete by id """
+        my_list = list(line.split())
+        if line == "":
+            print(self.list_err[0])
+        elif my_list[0] not in self.list_class:
+            print(self.list_err[1])
+        elif len(my_list) == 1:
+            print(self.list_err[2])
+        else:
+            my_dic = models.storage.all()
+            if (my_list[0] + "." + my_list[1]) in my_dic.keys():
+                del my_dic[my_list[0] + "." + my_list[1]]
+                models.storage.save()
+            else:
+                print(self.list_err[3])
+
+    def splitter(self, line):
+        """split line into arguments using shlex"""
+        lex = shlex.shlex(line)
+        lex.quotes = '"'
+        lex.whitespace_split = True
+        lex.commenters = ''
+        return list(lex)
+
+    def do_all(self, line):
+        """displays all class instances of given argument or all
+        if no argument given"""
+        dict_temp = models.storage.all()
+        if line is "":
+            list_obj = []
+            for obj_id in dict_temp.keys():
+                obj = dict_temp[obj_id]
+                list_obj.append("{}".format(obj))
+            print(list_obj)
+        else:
+            my_list = line.split()
+            if my_list[0] not in self.list_class:
+                print(self.list_err[1])
+            else:
+                list_obj = []
+                for key, value in dict_temp.items():
+                    if value.__class__.__name__ == my_list[0]:
+                        list_obj.append("{}".format(value))
+                print(list_obj)
+
+    def do_update(self, line):
+        """ update an object by className and id, with attribute and value """
+        my_list = self.splitter(line)
+        my_dic = models.storage.all()
+        if line == "":
+            print(self.list_err[0])
+        elif my_list[0] not in self.list_class:
+            print(self.list_err[1])
+        elif len(my_list) < 2:
+            print(self.list_err[2])
+        else:
+            if (my_list[0] + "." + my_list[1]) in my_dic.keys():
+                if len(my_list) < 3:
+                    print(self.list_err[4])
+                elif len(my_list) < 4:
+                    print(self.list_err[5])
+                else:
+                    obj_dic = my_dic[my_list[0] + "." + my_list[1]]
+                    setattr(obj_dic, my_list[2], my_list[3].replace("\"", ""))
+                    models.storage.save()
+            else:
+                print(self.list_err[3])
+
+    def do_quit(self, line):
+        """ Quit command to exit the program """
         return True
 
-    def do_EOF(self, arg):
-        """EOF command to exit the program."""
-        print("Exiting the program.")
+    def do_EOF(self, line):
+        """ EOF command to exit the program """
         return True
 
     def emptyline(self):
-        """An empty line + ENTER or an empty line +
-        spaces + ENTER shouldn’t execute anything."""
+        """ When the comand line is empty and it's typed """
         pass
 
-    def default(self, arg):
-        """Override default method to handle empty lines and spaces."""
-        argdict = {
-            "all": self.do_all,
-            "show": self.do_show,
-            "destroy": self.do_destroy,
-            "count": self.do_count,
-            "update": self.do_update
-            }
-        match = re.search(r"\.", arg)
-        if match is not None:
-            argl = [arg[:match.span()[0]], arg[match.span()[1]:]]
-            match = re.search(r"\((.*?)\)", argl[1])
-            if match is not None:
-                command = [argl[1][:match.span()[0]], match.group()[1:-1]]
-                if command[0] in argdict.keys():
-                    call = "{} {}".format(argl[0], command[1])
-                    return argdict[command[0]](call)
-        print("*** Unknown syntax: {}".format(arg))
-        return False
-
-    def do_help(self, arg):
-        """Help command to display available commands."""
-        if arg:
-
-            try:
-                func = getattr(self, 'do_' + arg)
-            except AttributeError:
-                print(f"No help on {arg}")
-                return
-            doc = func.__doc__
-            if doc:
-                print(doc)
-            else:
-                print(f"No help on {arg}")
-        else:
-            print("Documented commands (type help <topic>):")
-            print("=========================================")
-            cmd.Cmd.do_help(self, arg)
-
-
-if __name__ == "__main__":
+""" Executed the loop for Promp by default """
+if __name__ == '__main__':
     HBNBCommand().cmdloop()
