@@ -20,17 +20,19 @@ class BaseModel:
         """
         Initializes a new instance of BaseModel.
         """
-        self.id = str(uuid.uuid4())
-        self.created_at = self.updated_at = datetime.now()
         if kwargs:
-            for key, value in kwargs.items():
-                if key != "__class__":
-                    setattr(self, key, value)
-            if 'created_at' in kwargs:
-                self.created_at = datetime.fromisoformat(kwargs['created_at'])
-            if 'updated_at' in kwargs:
-                self.updated_at = datetime.fromisoformat(kwargs['updated_at'])
-
+            self.created_at = time_conversor(kwargs["created_at"])
+            self.updated_at = time_conversor(kwargs["updated_at"])
+            for k, v in kwargs.items():
+                if k == '__class__':
+                    continue
+                else:
+                    setattr(self, k, v)
+        else:
+            self.id = str(uuid4())
+            self.created_at = datetime.today().isoformat()
+            self.updated_at = datetime.today().isoformat()
+            models.storage.new(self)
     def __str__(self):
         self.__dict__.update({
             "created_at": time_conversor(self.created_at),
