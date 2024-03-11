@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" Defines the HBnB console. """
+""" shebang line - defines where the interpreter is located """
 import cmd
 import shlex
 import models
@@ -14,7 +14,7 @@ from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
-    """ Defines the HolbertonBnB command interpreter. """
+    """ class with methods to work into the commands line """
     prompt = "(hbnb) "
     list_class = ["BaseModel", "User", "State", "City",
                   "Amenity", "Place", "Review"]
@@ -23,7 +23,7 @@ class HBNBCommand(cmd.Cmd):
                 "** attribute name missing **", "** value missing **"]
 
     def do_create(self, line):
-
+        """ Create a new instance of BaseModel """
         my_list = list(line.split())
         if line == "":
             print(self.list_err[0])
@@ -35,7 +35,7 @@ class HBNBCommand(cmd.Cmd):
             print(self.list_err[1])
 
     def do_show(self, line):
-        """object by id """
+        """ Show object by id """
         my_list = list(line.split())
         if line == "":
             print(self.list_err[0])
@@ -51,7 +51,7 @@ class HBNBCommand(cmd.Cmd):
                 print(self.list_err[3])
 
     def do_destroy(self, line):
-        """ delete by id """
+        """ delete object by id """
         my_list = list(line.split())
         if line == "":
             print(self.list_err[0])
@@ -68,7 +68,7 @@ class HBNBCommand(cmd.Cmd):
                 print(self.list_err[3])
 
     def splitter(self, line):
-        """split line into arguments using shlex"""
+        """Function to split line into arguments using shlex"""
         lex = shlex.shlex(line)
         lex.quotes = '"'
         lex.whitespace_split = True
@@ -76,7 +76,7 @@ class HBNBCommand(cmd.Cmd):
         return list(lex)
 
     def do_all(self, line):
-        """displays all class instances of given argument or all
+        """Function that displays all class instances of given argument or all
         if no argument given"""
         dict_temp = models.storage.all()
         if line is "":
@@ -123,14 +123,14 @@ class HBNBCommand(cmd.Cmd):
         """ Quit command to exit the program """
         return True
 
-        def do_EOF(self, line):
-            """EOF signal to exit the program."""
-            print("")
-            return True
+    def do_EOF(self, line):
+        """ EOF command to exit the program """
+        return True
 
     def emptyline(self):
         """ When the comand line is empty and it's typed """
         pass
 
+""" Executed the loop for Promp by default """
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
