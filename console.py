@@ -12,6 +12,7 @@ from models.place import Place
 from models.amenity import Amenity
 from models.review import Review
 
+
 def parse(arg):
     """Parse command arguments."""
     curly_braces = re.search(r"\{(.*?)\}", arg)
@@ -30,36 +31,40 @@ def parse(arg):
         retl.append(curly_braces.group())
         return retl
 
+
 class HBNBCommand(cmd.Cmd):
     """Defines the HolbertonBnB command interpreter."""
     prompt = "(hbnb) "
-    __classes = {"BaseModel", "User", "State", "City", "Place", "Amenity", "Review"}
+    __classes = {
+            "BaseModel", "User", "State", "City", "Place", "Amenity", "Review"
+            }
 
     def do_quit(self, arg):
         """Quit command to exit the program."""
         print("Exiting the program.")
-        return True # Returning True exits the cmdloop
+        return True
 
     def do_EOF(self, arg):
         """EOF command to exit the program."""
         print("Exiting the program.")
-        return True # Returning True exits the cmdloop
+        return True
 
     def emptyline(self):
-        """An empty line + ENTER or an empty line + spaces + ENTER shouldn’t execute anything."""
-        pass # Do nothing
+        """An empty line + ENTER or an empty line +
+        spaces + ENTER shouldn’t execute anything."""
+        pass
 
     def default(self, line):
         """Override default method to handle empty lines and spaces."""
         if line.strip() == "":
-            pass # Do nothing for empty lines
+            pass
         else:
-            cmd.Cmd.default(self, line) # Call the default method for non-empty lines
+            cmd.Cmd.default(self, line)
 
     def do_help(self, arg):
         """Help command to display available commands."""
         if arg:
-            # Check if there's a specific command to provide help for
+
             try:
                 func = getattr(self, 'do_' + arg)
             except AttributeError:
@@ -71,12 +76,10 @@ class HBNBCommand(cmd.Cmd):
             else:
                 print(f"No help on {arg}")
         else:
-            # List available commands
             print("Documented commands (type help <topic>):")
             print("=========================================")
             cmd.Cmd.do_help(self, arg)
 
-    # Additional command methods can be added here
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
