@@ -131,6 +131,6 @@ class HBNBCommand(cmd.Cmd):
         """ When the comand line is empty and it's typed """
         pass
 
-""" Executed the loop for Promp by default """
+
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
