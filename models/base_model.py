@@ -3,7 +3,7 @@
 
 from .engine.file_storage import FileStorage
 from .user import User
-from uuid import uuid4
+import uuid
 from datetime import datetime
 
 
