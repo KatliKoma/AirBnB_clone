@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """This module defines a City class"""
 
-import BaseModel
+from models.base_model import BaseModel
 
 
 class City(BaseModel):

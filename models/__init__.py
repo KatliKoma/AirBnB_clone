@@ -1,4 +1,4 @@
-# models/__init__.py
+#!/usr/bin/python3
 import models
 from .engine.file_storage import FileStorage
 

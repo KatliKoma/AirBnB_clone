@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """This module defines an Amenity class"""
-import BaseModel
+from models.base_model import BaseModel
 
 
 class Amenity(BaseModel):
