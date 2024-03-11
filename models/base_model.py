@@ -28,8 +28,13 @@ class BaseModel:
         return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)
 
     def save(self):
+        """
+        method that updates the public instance attribute updated_at
+        with the current datetime
+         """
         self.updated_at = datetime.now()
-        models.storage.save(self)
+        models.storage.save()
+
 
     def to_dict(self):
         dictionary = self.__dict__.copy()
