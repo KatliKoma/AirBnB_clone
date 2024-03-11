@@ -3,6 +3,13 @@ import uuid
 from datetime import datetime
 import models
 
+def time_conversor(obj):
+    """ Define time conversor
+        that return new time object
+    """
+    if type(obj) in [datetime]:
+        obj = obj.strftime('%Y-%m-%dT%H:%M:%S.%f')
+    return datetime.strptime(obj, "%Y-%m-%dT%H:%M:%S.%f")
 
 class BaseModel:
     """
