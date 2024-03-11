@@ -46,8 +46,8 @@ class HBNBCommand(cmd.Cmd):
         return True # Returning True exits the cmdloop
 
     def emptyline(self):
-        """An empty line + ENTER or an empty line + spaces + ENTER shouldn’t execute anything."""
-        pass # Do nothing
+        """Do nothing upon receiving an empty line."""
+        pass
 
     def do_help(self, arg):
         """Help command to display available commands."""
