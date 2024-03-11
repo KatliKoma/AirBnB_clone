@@ -59,11 +59,10 @@ class BaseModel:
     def to_dict(self):
         """Returns a dictionary containing all keys/values of __dict__ of the instance."""
         dictionary = OrderedDict()
+        dictionary['my_number'] = self.my_number if hasattr(self, 'my_number') else 0
+        dictionary['name'] = self.name if hasattr(self, 'name') else ""
+        dictionary['__class__'] = self.__class__.__name__
+        dictionary['updated_at'] = self.updated_at.isoformat()
         dictionary['id'] = self.id
         dictionary['created_at'] = self.created_at.isoformat()
-        dictionary['updated_at'] = self.updated_at.isoformat()
-        dictionary['name'] = self.name if hasattr(self, 'name') else ""
-        dictionary['my_number'] = self.my_number if hasattr(self, 'my_number') else 0
-        dictionary['__class__'] = self.__class__.__name__
         return dictionary
-
