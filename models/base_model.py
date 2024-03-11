@@ -1,7 +1,6 @@
 import uuid
 from datetime import datetime
-from models
-
+import models
 
 class BaseModel:
     """
@@ -50,13 +49,13 @@ class BaseModel:
             print(f"An error occurred while saving: {e}")
 
     def to_dict(self):
-    """
-    Returns a dictionary containing all keys/values of the instance.
-    """
-    rdict = self.__dict__.copy()
-    rdict["created_at"] = (self.created_at.isoformat()
+        """
+        Returns a dictionary containing all keys/values of the instance.
+        """
+        rdict = self.__dict__.copy()
+        rdict["created_at"] = (self.created_at.isoformat()
                            if hasattr(self, 'created_at') else 'None')
-    rdict["updated_at"] = (self.updated_at.isoformat()
+        rdict["updated_at"] = (self.updated_at.isoformat()
                            if hasattr(self, 'updated_at') else 'None')
-    rdict["__class__"] = self.__class__.__name__
-    return rdict
+        rdict["__class__"] = self.__class__.__name__
+        return rdict
