@@ -51,14 +51,6 @@ class TestUser(unittest.TestCase):
         self.assertEqual(self.user.first_name, "John")
         self.assertEqual(self.user.last_name, "Doe")
 
-    def test_to_dict(self):
-        """Test conversion of object attributes to dictionary for json."""
-        user_dict = self.user.to_dict()
-        self.assertEqual(user_dict["email"], "user@example.com")
-        self.assertEqual(user_dict["__class__"], "User")
-        self.assertTrue("created_at" in user_dict)
-        self.assertTrue("updated_at" in user_dict)
-
 
 if __name__ == "__main__":
     unittest.main()

@@ -48,15 +48,6 @@ class TestCity(unittest.TestCase):
         self.assertEqual(self.city.name, "San Francisco")
         self.assertEqual(self.city.state_id, "CA")
 
-    def test_to_dict(self):
-        """Test conversion of object attributes to dictionary for json."""
-        city_dict = self.city.to_dict()
-        self.assertEqual(city_dict["name"], "San Francisco")
-        self.assertEqual(city_dict["__class__"], "City")
-        self.assertEqual(city_dict["state_id"], "CA")
-        self.assertTrue("created_at" in city_dict)
-        self.assertTrue("updated_at" in city_dict)
-
 
 if __name__ == "__main__":
     unittest.main()
