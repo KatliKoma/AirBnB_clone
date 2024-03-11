@@ -1,103 +1,113 @@
 #!/usr/bin/python3
-"""Defines unit tests for models/base_model.py.
+ """Provides unit tests for the review models located in models/review.py.
 
-Unit test classes:
-    BaseModelTest_Instantiation
-    BaseModelTest_SaveMethod
-    BaseModelTest_ToDictMethod
-"""
+ Unit test classes included:
+     TestReview_instantiation
+     TestReview_save
+     TestReview_to_dict
+ """
+
 import os
 import models
 import unittest
 from datetime import datetime
 from time import sleep
-from models.base_model import BaseModel
+from models.review import Review
 
 
-class BaseModelTest_Instantiation(unittest.TestCase):
-    """Unit tests for testing instantiation of BaseModel."""
+class TestReview_instantiation(unittest.TestCase):
+    """Unittests for testing instantiation of the Review class."""
 
-    def test_no_arguments_creates_instance(self):
-        self.assertEqual(BaseModel, type(BaseModel()))
+    def test_no_args_instantiates(self):
+        self.assertEqual(Review, type(Review()))
 
-    def test_instance_in_storage(self):
-        self.assertIn(BaseModel(), models.storage.all().values())
+    def test_new_instance_stored_in_objects(self):
+        self.assertIn(Review(), models.storage.all().values())
 
-    def test_id_is_str_public_attribute(self):
-        self.assertEqual(str, type(BaseModel().id))
+    def test_id_is_public_str(self):
+        self.assertEqual(str, type(Review().id))
 
-    def test_created_at_public_datetime_attribute(self):
-        self.assertEqual(datetime, type(BaseModel().created_at))
+    def test_created_at_is_public_datetime(self):
+        self.assertEqual(datetime, type(Review().created_at))
 
-    def test_updated_at_public_datetime_attribute(self):
-        self.assertEqual(datetime, type(BaseModel().updated_at))
+    def test_updated_at_is_public_datetime(self):
+        self.assertEqual(datetime, type(Review().updated_at))
 
-    def test_unique_ids_for_different_instances(self):
-        base_model_1 = BaseModel()
-        base_model_2 = BaseModel()
-        self.assertNotEqual(base_model_1.id, base_model_2.id)
+    def test_place_id_is_public_class_attribute(self):
+        rv = Review()
+        self.assertEqual(str, type(Review.place_id))
+        self.assertIn("place_id", dir(rv))
+        self.assertNotIn("place_id", rv.__dict__)
 
-    def test_different_created_at_for_new_instances(self):
-        base_model_1 = BaseModel()
+    def test_user_id_is_public_class_attribute(self):
+        rv = Review()
+        self.assertEqual(str, type(Review.user_id))
+        self.assertIn("user_id", dir(rv))
+        self.assertNotIn("user_id", rv.__dict__)
+
+    def test_text_is_public_class_attribute(self):
+        rv = Review()
+        self.assertEqual(str, type(Review.text))
+        self.assertIn("text", dir(rv))
+        self.assertNotIn("text", rv.__dict__)
+
+    def test_two_reviews_unique_ids(self):
+        rv1 = Review()
+        rv2 = Review()
+        self.assertNotEqual(rv1.id, rv2.id)
+
+    def test_two_reviews_different_created_at(self):
+        rv1 = Review()
         sleep(0.05)
-        base_model_2 = BaseModel()
-        self.assertLess(base_model_1.created_at, base_model_2.created_at)
+        rv2 = Review()
+        self.assertLess(rv1.created_at, rv2.created_at)
 
-    def test_different_updated_at_for_new_instances(self):
-        base_model_1 = BaseModel()
+    def test_two_reviews_different_updated_at(self):
+        rv1 = Review()
         sleep(0.05)
-        base_model_2 = BaseModel()
-        self.assertLess(base_model_1.updated_at, base_model_2.updated_at)
+        rv2 = Review()
+        self.assertLess(rv1.updated_at, rv2.updated_at)
 
-    def test_string_representation(self):
-        datetime_now = datetime.today()
-        datetime_repr = repr(datetime_now)
-        base_model = BaseModel()
-        base_model.id = "123456"
-        base_model.created_at = base_model.updated_at = datetime_now
-        str_base_model = base_model.__str__()
-        self.assertIn("[BaseModel] (123456)", str_base_model)
-        self.assertIn("'id': '123456'", str_base_model)
-        self.assertIn("'created_at': " + datetime_repr, str_base_model)
-        self.assertIn("'updated_at': " + datetime_repr, str_base_model)
+    def test_str_representation(self):
+        dt = datetime.today()
+        dt_repr = repr(dt)
+        rv = Review()
+        rv.id = "123456"
+        rv.created_at = rv.updated_at = dt
+        rvstr = rv.__str__()
+        self.assertIn("[Review] (123456)", rvstr)
+        self.assertIn("'id': '123456'", rvstr)
+        self.assertIn("'created_at': " + dt_repr, rvstr)
+        self.assertIn("'updated_at': " + dt_repr, rvstr)
 
-    def test_unused_arguments(self):
-        base_model = BaseModel(None)
-        self.assertNotIn(None, base_model.__dict__.values())
+    def test_args_unused(self):
+        rv = Review(None)
+        self.assertNotIn(None, rv.__dict__.values())
 
     def test_instantiation_with_kwargs(self):
-        datetime_now = datetime.today()
-        datetime_iso = datetime_now.isoformat()
-        base_model = BaseModel(id="345", created_at=datetime_iso, updated_at=datetime_iso)
-        self.assertEqual(base_model.id, "345")
-        self.assertEqual(base_model.created_at, datetime_now)
-        self.assertEqual(base_model.updated_at, datetime_now)
+        dt = datetime.today()
+        dt_iso = dt.isoformat()
+        rv = Review(id="345", created_at=dt_iso, updated_at=dt_iso)
+        self.assertEqual(rv.id, "345")
+        self.assertEqual(rv.created_at, dt)
+        self.assertEqual(rv.updated_at, dt)
 
-    def test_instantiation_with_None_kwargs_raises_error(self):
+    def test_instantiation_with_None_kwargs(self):
         with self.assertRaises(TypeError):
-            BaseModel(id=None, created_at=None, updated_at=None)
-
-    def test_instantiation_with_args_and_kwargs(self):
-        datetime_now = datetime.today()
-        datetime_iso = datetime_now.isoformat()
-        base_model = BaseModel("12", id="345", created_at=datetime_iso, updated_at=datetime_iso)
-        self.assertEqual(base_model.id, "345")
-        self.assertEqual(base_model.created_at, datetime_now)
-        self.assertEqual(base_model.updated_at, datetime_now)
+            Review(id=None, created_at=None, updated_at=None)
 
 
-class BaseModelTest_SaveMethod(unittest.TestCase):
-    """Unit tests for testing the save method of BaseModel."""
+class TestReview_save(unittest.TestCase):
+    """Unittests for testing save method of the Review class."""
 
     @classmethod
-    def setUpClass(cls):
+    def setUp(self):
         try:
             os.rename("file.json", "tmp")
         except IOError:
             pass
 
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(self):
         try:
             os.remove("file.json")
         except IOError:
@@ -107,86 +117,85 @@ class BaseModelTest_SaveMethod(unittest.TestCase):
         except IOError:
             pass
 
-    def test_single_save_method_call(self):
-        base_model = BaseModel()
+    def test_one_save(self):
+        rv = Review()
         sleep(0.05)
-        initial_updated_at = base_model.updated_at
-        base_model.save()
-        self.assertLess(initial_updated_at, base_model.updated_at)
+        first_updated_at = rv.updated_at
+        rv.save()
+        self.assertLess(first_updated_at, rv.updated_at)
 
-    def test_multiple_save_method_calls(self):
-        base_model = BaseModel()
+    def test_two_saves(self):
+        rv = Review()
         sleep(0.05)
-        initial_updated_at = base_model.updated_at
-        base_model.save()
-        after_first_save = base_model.updated_at
-        self.assertLess(initial_updated_at, after_first_save)
+        first_updated_at = rv.updated_at
+        rv.save()
+        second_updated_at = rv.updated_at
+        self.assertLess(first_updated_at, second_updated_at)
         sleep(0.05)
-        base_model.save()
-        self.assertLess(after_first_save, base_model.updated_at)
+        rv.save()
+        self.assertLess(second_updated_at, rv.updated_at)
 
-    def test_save_method_with_argument_raises_error(self):
-        base_model = BaseModel()
+    def test_save_with_arg(self):
+        rv = Review()
         with self.assertRaises(TypeError):
-            base_model.save(None)
+            rv.save(None)
 
-    def test_save_updates_file_storage(self):
-        base_model = BaseModel()
-        base_model.save()
-        base_model_id = "BaseModel." + base_model.id
-        with open("file.json", "r") as file:
-            self.assertIn(base_model_id, file.read())
+    def test_save_updates_file(self):
+        rv = Review()
+        rv.save()
+        rvid = "Review." + rv.id
+        with open("file.json", "r") as f:
+            self.assertIn(rvid, f.read())
 
 
-class BaseModelTest_ToDictMethod(unittest.TestCase):
-    """Unit tests for testing the to_dict method of BaseModel."""
+class TestReview_to_dict(unittest.TestCase):
+    """Unittests for testing to_dict method of the Review class."""
 
-    def test_to_dict_returns_dictionary(self):
-        base_model = BaseModel()
-        self.assertTrue(dict, type(base_model.to_dict()))
+    def test_to_dict_type(self):
+        self.assertTrue(dict, type(Review().to_dict()))
 
     def test_to_dict_contains_correct_keys(self):
-        base_model = BaseModel()
-        self.assertIn("id", base_model.to_dict())
-        self.assertIn("created_at", base_model.to_dict())
-        self.assertIn("updated_at", base_model.to_dict())
-        self.assertIn("__class__", base_model.to_dict())
+        rv = Review()
+        self.assertIn("id", rv.to_dict())
+        self.assertIn("created_at", rv.to_dict())
+        self.assertIn("updated_at", rv.to_dict())
+        self.assertIn("__class__", rv.to_dict())
 
-    def test_to_dict_includes_added_attributes(self):
-        base_model = BaseModel()
-        base_model.name = "Holberton"
-        base_model.my_number = 98
-        base_model_dict = base_model.to_dict()
-        self.assertIn("name", base_model_dict)
-        self.assertIn("my_number", base_model_dict)
+    def test_to_dict_contains_added_attributes(self):
+        rv = Review()
+        rv.middle_name = "Holberton"
+        rv.my_number = 98
+        self.assertEqual("Holberton", rv.middle_name)
+        self.assertIn("my_number", rv.to_dict())
 
-    def test_to_dict_converts_datetime_to_str(self):
-        base_model = BaseModel()
-        base_model_dict = base_model.to_dict()
-        self.assertEqual(str, type(base_model_dict["created_at"]))
-        self.assertEqual(str, type(base_model_dict["updated_at"]))
+    def test_to_dict_datetime_attributes_are_strs(self):
+        rv = Review()
+        rv_dict = rv.to_dict()
+        self.assertEqual(str, type(rv_dict["id"]))
+        self.assertEqual(str, type(rv_dict["created_at"]))
+        self.assertEqual(str, type(rv_dict["updated_at"]))
 
-    def test_to_dict_output_matches_expected_dict(self):
-        datetime_now = datetime.today()
-        base_model = BaseModel()
-        base_model.id = "123456"
-        base_model.created_at = base_model.updated_at = datetime_now
-        expected_dict = {
+    def test_to_dict_output(self):
+        dt = datetime.today()
+        rv = Review()
+        rv.id = "123456"
+        rv.created_at = rv.updated_at = dt
+        tdict = {
             'id': '123456',
-            '__class__': 'BaseModel',
-            'created_at': datetime_now.isoformat(),
-            'updated_at': datetime_now.isoformat()
+            '__class__': 'Review',
+            'created_at': dt.isoformat(),
+            'updated_at': dt.isoformat(),
         }
-        self.assertDictEqual(base_model.to_dict(), expected_dict)
+        self.assertDictEqual(rv.to_dict(), tdict)
 
-    def test_difference_between_to_dict_and___dict__(self):
-        base_model = BaseModel()
-        self.assertNotEqual(base_model.to_dict(), base_model.__dict__)
+    def test_contrast_to_dict_dunder_dict(self):
+        rv = Review()
+        self.assertNotEqual(rv.to_dict(), rv.__dict__)
 
-    def test_to_dict_with_argument_raises_error(self):
-        base_model = BaseModel()
+    def test_to_dict_with_arg(self):
+        rv = Review()
         with self.assertRaises(TypeError):
-            base_model.to_dict(None)
+            rv.to_dict(None)
 
 
 if __name__ == "__main__":
