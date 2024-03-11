@@ -12,6 +12,7 @@ from models.place import Place
 from models.amenity import Amenity
 from models.review import Review
 
+
 def parse(arg):
     """Parse command arguments."""
     curly_braces = re.search(r"\{(.*?)\}", arg)
@@ -30,20 +31,22 @@ def parse(arg):
         retl.append(curly_braces.group())
         return retl
 
+
 class HBNBCommand(cmd.Cmd):
     """Defines the HolbertonBnB command interpreter."""
     prompt = "(hbnb) "
-    __classes = {"BaseModel", "User", "State", "City", "Place", "Amenity", "Review"}
+    __classes =
+    {"BaseModel", "User", "State", "City", "Place", "Amenity", "Review"}
 
     def do_quit(self, arg):
         """Quit command to exit the program."""
         print("Exiting the program.")
-        return True # Returning True exits the cmdloop
+        return True
 
     def do_EOF(self, arg):
         """EOF command to exit the program."""
         print("Exiting the program.")
-        return True # Returning True exits the cmdloop
+        return True
 
     def emptyline(self):
         """Do nothing upon receiving an empty line."""
@@ -69,7 +72,6 @@ class HBNBCommand(cmd.Cmd):
             print("=========================================")
             cmd.Cmd.do_help(self, arg)
 
-    # Additional command methods can be added here
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
