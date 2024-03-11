@@ -33,34 +33,33 @@ def parse(arg):
 class HBNBCommand(cmd.Cmd):
     """Defines the HolbertonBnB command interpreter."""
     prompt = "(hbnb) "
-    __classes = {
-        "BaseModel", "User", "State", "City", "Place", "Amenity", "Review"
-    }
+    __classes = {"BaseModel", "User", "State", "City", "Place", "Amenity", "Review"}
 
     def do_quit(self, arg):
         """Quit command to exit the program."""
         print("Exiting the program.")
-        return True
+        return True # Returning True exits the cmdloop
 
     def do_EOF(self, arg):
         """EOF command to exit the program."""
         print("Exiting the program.")
-        return True
+        return True # Returning True exits the cmdloop
 
     def emptyline(self):
         """An empty line + ENTER or an empty line + spaces + ENTER shouldn’t execute anything."""
-        pass
+        pass # Do nothing
 
     def default(self, line):
         """Override default method to handle empty lines and spaces."""
         if line.strip() == "":
-            pass
+            pass # Do nothing for empty lines
         else:
-            cmd.Cmd.default(self, line)
+            cmd.Cmd.default(self, line) # Call the default method for non-empty lines
 
     def do_help(self, arg):
         """Help command to display available commands."""
         if arg:
+            # Check if there's a specific command to provide help for
             try:
                 func = getattr(self, 'do_' + arg)
             except AttributeError:
@@ -72,9 +71,12 @@ class HBNBCommand(cmd.Cmd):
             else:
                 print(f"No help on {arg}")
         else:
+            # List available commands
             print("Documented commands (type help <topic>):")
             print("=========================================")
             cmd.Cmd.do_help(self, arg)
+
+    # Additional command methods can be added here
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
