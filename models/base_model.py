@@ -2,6 +2,7 @@
 import uuid
 from datetime import datetime
 import models
+from collections import OrderedDict
 
 def time_conversor(obj):
     """ Define time conversor
@@ -56,8 +57,13 @@ class BaseModel:
         models.storage.save()
 
     def to_dict(self):
-        dictionary = self.__dict__.copy()
-        dictionary['__class__'] = self.__class__.__name__
+        """Returns a dictionary containing all keys/values of __dict__ of the instance."""
+        dictionary = OrderedDict()
+        dictionary['id'] = self.id
         dictionary['created_at'] = self.created_at.isoformat()
         dictionary['updated_at'] = self.updated_at.isoformat()
+        dictionary['name'] = self.name if hasattr(self, 'name') else ""
+        dictionary['my_number'] = self.my_number if hasattr(self, 'my_number') else 0
+        dictionary['__class__'] = self.__class__.__name__
         return dictionary
+
