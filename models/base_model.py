@@ -24,8 +24,13 @@ class BaseModel:
             if 'updated_at' in kwargs:
                 self.updated_at = datetime.fromisoformat(kwargs['updated_at'])
 
-        def __str__(self):
-            return ("[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__))
+    def __str__(self):
+        self.__dict__.update({
+            "created_at": time_conversor(self.created_at),
+            "updated_at": time_conversor(self.updated_at),
+        })
+        return "[{:s}] ({:s}) {}".format(
+            self.__class__.__name__, self.id, self.__dict__)
 
     def __repr__(self):
         """ Define method repr that return
