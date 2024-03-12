@@ -2,7 +2,6 @@
 import uuid
 from datetime import datetime
 import models
-from collections import OrderedDict
 
 
 def time_conversor(obj):
@@ -18,60 +17,66 @@ class BaseModel:
     """
     Defines all common attributes/methods for other classes.
     """
-
     def __init__(self, *args, **kwargs):
-        """
-        Initializes a new instance of BaseModel.
-        """
         self.id = str(uuid.uuid4())
-        self.created_at = self.updated_at = datetime.now()
+        t_format = "%Y-%m-%dT%H:%M:%S.%f"
+        self.created_at = datetime.utcnow()
+        self.updated_at = datetime.utcnow()
+
         if kwargs:
             for key, value in kwargs.items():
-                if key != "__class__":
+                if key == "__class__":
+                    continue
+                elif key == "created_at" or key == "updated_at":
+                    setattr(self, key, datetime.strptime(value, time_format))
+                else:
                     setattr(self, key, value)
-                if 'created_at' in kwargs:
-                    self.created_at = datetime.fromisoformat(
-                            kwargs['created_at']
-                            )
-                if 'updated_at' in kwargs:
-                    self.updated_at = datetime.fromisoformat(
-                            kwargs['updated_at']
-                            )
+
+        models.storage.new(self)
 
     def __str__(self):
-        self.__dict__.update({
-            "created_at": time_conversor(self.created_at),
-            "updated_at": time_conversor(self.updated_at),
-        })
-        return "[{:s}] ({:s}) {}".format(
-            self.__class__.__name__, self.id, self.__dict__)
+        """ """
+        class_name = self.__class__.__name__
+        return "[{}] ({}) {}".format(class_name, self.id, self.__dict__)
 
-    def __repr__(self):
-        """ Define method repr that return
-            string representation
-        """
-        return "[{:s}] ({:s}) {}".format(
-            self.__class__.__name__, self.id, self.__dict__)
+
+if __name__ == "__main__":
+    m_model = BaseModel()
+    m_model.name = "My_First_Model"
+    m_model.m_number = 89
+    print(m_model.id)
+    print(m_model)
+    print(type(m_model.created_at))
+    print("__")
+    my_json_model = m_model.to_dict()
+    print(my_json_model)
+    print("JSON of m_model:")
+    for key inmy_json_model.keys():
+        print("\t{}: ({}) - {}".format(key, type(my_json_model[key]))
+
+        print("--")
+        new_model = BaseModel(**my_json_model)
+        print(new_model.id)
+        print(type(new_model.created_at))
+
+        print("--")
+        print(m_model is new_model)
 
     def save(self):
         """
         method that updates the public instance attribute updated_at
         with the current datetime
-         """
-        self.updated_at = datetime.now()
+        """
+        self.updated_at = datetime.utcnow()
         models.storage.save()
 
     def to_dict(self):
         """Returns a dictionary containing all
-        keys/values of __dict__ of the instance."""
-        dictionary = dict(self.__dict__)
-        dictionary = OrderedDict()
-        dictionary['my_number'] = self.my_number if hasattr(
-                self, 'my_number'
-                ) else 0
-        dictionary['name'] = self.name if hasattr(self, 'name') else ""
-        dictionary['__class__'] = self.__class__.__name__
-        dictionary['updated_at'] = self.updated_at.isoformat()
-        dictionary['id'] = self.id
-        dictionary['created_at'] = self.created_at.isoformat()
+        keys/values of __dict__
+        """
+        dictionary = self.__dict__.copy()
+        dictionary["__class__"] = self.__class__.__name__
+        dictionary["created_at"] = self.created_at.isoformat()
+        dictionary["updated_at"] = self.updatet_at.isoformat()
+
         return dictionary
