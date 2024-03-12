@@ -41,14 +41,14 @@ class BaseModel:
 
 
 if __name__ == "__main__":
-    m_model = BaseModel()
-    m_model.name = "My_First_Model"
-    m_model.m_number = 89
-    print(m_model.id)
-    print(m_model)
-    print(type(m_model.created_at))
+    my_model = BaseModel()
+    my_model.name = "My_First_Model"
+    my_model.my_number = 89
+    print(my_model.id)
+    print(my_model)
+    print(type(my_model.created_at))
     print("__")
-    my_json_model = m_model.to_dict()
+    my_json_model = my_model.to_dict()
     print(my_json_model)
     print("JSON of m_model:")
     for key inmy_json_model.keys():
@@ -60,7 +60,7 @@ if __name__ == "__main__":
         print(type(new_model.created_at))
 
         print("--")
-        print(m_model is new_model)
+        print(my_model is new_model)
 
     def save(self):
         """
