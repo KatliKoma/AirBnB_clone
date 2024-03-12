@@ -23,16 +23,35 @@ class BaseModel:
         self.created_at = datetime.utcnow()
         self.updated_at = datetime.utcnow()
 
-        if kwargs:
-            for key, value in kwargs.items():
-                if key == "__class__":
-                    continue
-                elif key == "created_at" or key == "updated_at":
-                    setattr(self, key, datetime.strptime(value, time_format))
-                else:
-                    setattr(self, key, value)
+        for key, value in kwargs.items():
+            if key == "__class__":
+                continue
+            elif key == "created_at" or key == "updated_at":
+                setattr(self, key, datetime.strptime(value, time_format))
+            else:
+                setattr(self, key, value)
 
         models.storage.new(self)
+
+    def save(self):
+        """
+        method that updates the public instance attribute updated_at
+        with the current datetime
+        """
+        self.updated_at = datetime.utcnow()
+        models.storage.save()
+
+    def to_dict(self):
+        """
+        Returns a dictionary containing all
+        keys/values of __dict__
+        """
+        dictionary = self.__dict__.copy()
+        dictionary["__class__"] = self.__class__.__name__
+        dictionary["create_at"] = self.created_at.isoformat()
+        dictionary["updated_at"] = self.updated_at.isoformat()
+
+        return dictionary
 
     def __str__(self):
         """ """
@@ -51,32 +70,13 @@ if __name__ == "__main__":
     my_json_model = my_model.to_dict()
     print(my_json_model)
     print("JSON of m_model:")
-    for key inmy_json_model.keys():
+    for key in my_json_model.keys():
         print("\t{}: ({}) - {}".format(key, type(my_json_model[key]))
 
-        print("--")
+    print("--")
         new_model = BaseModel(**my_json_model)
-        print(new_model.id)
-        print(type(new_model.created_at))
+    print(new_model.id)
+    print(type(new_model.created_at))
 
-        print("--")
-        print(my_model is new_model)
-
-    def save(self):
-        """
-        method that updates the public instance attribute updated_at
-        with the current datetime
-        """
-        self.updated_at = datetime.utcnow()
-        models.storage.save()
-
-    def to_dict(self):
-        """Returns a dictionary containing all
-        keys/values of __dict__
-        """
-        dictionary = self.__dict__.copy()
-        dictionary["__class__"] = self.__class__.__name__
-        dictionary["created_at"] = self.created_at.isoformat()
-        dictionary["updated_at"] = self.updatet_at.isoformat()
-
-        return dictionary
+    print("--")
+    print(my_model is new_model)
