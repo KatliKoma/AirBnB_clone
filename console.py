@@ -94,20 +94,35 @@ class HBNBCommand(cmd.Cmd):
         else:
             print("** class doesn't exist **")
 
-    def do_all(self, line):
-        """Prints all string representation
-        of all instances based or not on the class name."""
-        args = shlex.split(line)
-        if not args or args[0] in HBNBCommand.class_dict:
-            obj_list = []
-            for obj_id in storage.all():
-                obj = storage.all()[obj_id]
-                if not args or args[0] == obj.__class__.__name__:
-                    obj_list.append(obj.__str__())
-            print(obj_list)
+        def do_all(self, self):
+        """
+        all - show all list of json objects
+        -----------------------------------------------------
+        available models:
+        - BaseModel
+        - Amenity
+        - City
+        - Place
+        - Review
+        - User
+        - State
+        -----------------------------------------------------
+        @ usage - > <data> <model> {ex: all BaseModel}
+        """
+        aux_list = []
+        with open('file.json', 'r') as jsonfile:
+            tmp_dictionary = loads(jsonfile.read())
+        for key, value in tmp_dictionary.items():
+            tmp_str = str(key + ' ' + str(value))
+            aux_list.append(tmp_str)
+        if len(arg) == 0:
+            print(aux_list)
         else:
-            print("** class doesn't exist **")
-
+            if arg not in classes:
+                print("** class doesn't exist **")
+                return 0
+            else:
+                print(aux_list)
     def do_update(self, line):
         """Updates an instance based on the class
         name, id, attribute name and value."""
@@ -140,6 +155,7 @@ class HBNBCommand(cmd.Cmd):
         if len(args) > 1:
             if args[1] == "all()":
                 self.do_all(args[0])
+
 
 
 if __name__ == '__main__':
