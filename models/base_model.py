@@ -7,6 +7,7 @@ import uuid
 from datetime import datetime
 import models
 
+
 class BaseModel:
     """
     The BaseModel class from which future classes will be derived
@@ -43,7 +44,8 @@ class BaseModel:
 
     def to_dict(self):
         """
-        Returns a dictionary containing all keys/values of __dict__ of the instance
+        Returns a dictionary containing all
+        keys/values of __dict__ of the instance
         """
         my_dict = self.__dict__.copy()
         my_dict['__class__'] = self.__class__.__name__
