@@ -1,13 +1,13 @@
 #!/usr/bin/python3
-"""Defines the user class."""
+"""Defines the User class."""
 from models.base_model import BaseModel
 
 
 class User(BaseModel):
-    """
-    Class user handles the user's information
-    """
     email = ""
     password = ""
     first_name = ""
     last_name = ""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
