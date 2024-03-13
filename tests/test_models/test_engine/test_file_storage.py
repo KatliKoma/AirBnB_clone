@@ -1,94 +1,73 @@
 #!/usr/bin/python3
 """
-Test FileStorage class
+Module for serializing and deserializing data
 """
-
-
-import unittest
-# import pep8
 import json
 import os
-import shutil
 from models.base_model import BaseModel
 from models.user import User
-from models.state import State
-from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
-from models.engine.file_storage import FileStorage
+from models.state import State
+from models.city import City
 
 
-class TestFileStorage(unittest.TestCase):
-    """testing file storage
+class FileStorage:
     """
-    @classmethod
-    def setUpClass(cls):
-        """ method class setup
+    FileStorage class for storing data
+    """
+    __file_path = "file.json"
+    __objects = {}
+
+    def new(self, obj):
         """
-        cls.aux1 = Review()
-        cls.aux1.place_id = "testing"
-        cls.aux1.user_id = "idUSER"
-        cls.aux1.text = "text1"
-
-    @classmethod
-    def teardown(cls):
-        """ method class tear
+         Sets an object in the __objects dictionary with a key of 
+         <obj class name>.id.
         """
-        del cls.aux1
+        obj_cls_name = obj.__class__.__name__
+        key = "{}.{}".format(obj_cls_name, obj.id)
+        FileStorage.__objects[key] = obj
 
-    def teardown(self):
-        """ method tear
+
+    def all(self):
         """
-        try:
-            os.remove("file.json")
-        except Exception:
-            pass
-
-
-    def test_all(self):
-        """ Tests method:all
+        Returns __objects dictionary.
+        Gives access to all the stored objects.
         """
-        storage = FileStorage()
-        instances_dic = storage.all()
-        self.assertIsNotNone(instances_dic)
-        self.assertEqual(type(instances_dic), dict)
-        self.assertIs(instances_dic, storage._FileStorage__objects)
+        return  FileStorage.__objects
 
-    def test_new(self):
-        """ Tests method: new (saves new object into dictionary)
+
+    def save(self):
         """
-        m_storage = FileStorage()
-        instances_dic = m_storage.all()
-        user1 = User()
-        user1.id = 999999
-        user1.name = "user1"
-        m_storage.new(user1)
-        key = user1.__class__.__name__ + "." + str(user1.id)
-        self.assertIsNotNone(instances_dic[key])
-
-    def test_reload_empty(self):
-        """ Tests method: reload (reloads objects from string file)
+        Sets the __objects dictionary to 
+        JSON format and saves it to file specified by __file_path.
         """
-        a_storage = FileStorage()
-        try:
-            os.remove("file.json")
-        except Exception:
-            pass
-        with open("file.json", "w") as f:
-            f.write("{}")
-        with open("file.json", "r") as r:
-            for line in r:
-                self.assertEqual(line, "{}")
-        self.assertIs(a_storage.reload(), None)
+        obj_all = FileStorage.__objects
+        obj_dict = {}
 
-    def test_save(self):
-        """Tests method: save (serializes objects to file)"""
-        storage = FileStorage()
-        new_obj = User(email="email@example.com", password="password")
-        storage.new(new_obj)
-        storage.save()
-        self.assertTrue(os.path.exists('file.json'))
-        with open('file.json', 'r') as f:
-        content = json.load(f)
-        self.assertIn(new_obj.__class__.__name__ + "." + new_obj.id, content)
+        for obj in obj_all.keys():
+            obj_dict[obj] = obj_all[obj].to_dict()
+
+        with open(FileStorage.__file_path, "w", encoding="utf-8") as file:
+            json.dump(obj_dict, file)
+
+    def reload(self):
+        """
+        This method deserializes the JSON file
+        """
+        if os.path.isfile(FileStorage.__file_path):
+            with open(FileStorage.__file_path, "r", encoding="utf-8") as file:
+                try:
+                    obj_dict = json.load(file)
+
+                    for key, value in obj_dict.items():
+                        class_name, obj_id = key.split('.')
+
+                        cls = eval(class_name)
+
+                        instance = cls(**value)
+
+                        FileStorage.__objects[key] = instance
+                except Exception:
+                    pass
