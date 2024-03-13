@@ -58,10 +58,14 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, arg):
         """Prints all string representations of all instances based or not on the class name."""
         args = arg.split()
-        all_objs = storage.all()  # Ensure your storage supports `all`
+        if len(args) > 0 and args[0] not in self.classes:
+            print("** class doesn't exist **")
+            return
+        all_objs = storage.all()
         for obj_id, obj in all_objs.items():
             if not args or obj.__class__.__name__ == args[0]:
                 print(obj)
+
 
     def do_update(self, arg):
         """Updates an instance based on the class name and id by adding or updating attribute."""
@@ -98,22 +102,21 @@ class HBNBCommand(cmd.Cmd):
         setattr(obj, attribute_name, value)
         obj.save()  # Make sure your object has a save method to update the storage
 
-        def do_destroy(self, arg):
-            """Deletes an instance based on the class name and id."""
-            args = arg.split()
-            if len(args) < 2:
-                print("** class name missing **" if len(args) == 0 else "** instance id missing **")
-                return
-            if args[0] not in self.classes:
-                print("** class doesn't exist **")
-                return
-            key = f"{args[0]}.{args[1]}"
-            if key in storage.all():
-                del storage.all()[key]
-                storage.save()  # Make sure this method is implemented to save changes
-            else:
-                print("** no instance found **")
+    def do_destroy(self, arg):
+        """Deletes an instance based on the class name and id."""
+        args = arg.split()
+        if len(args) < 2:
+            print("** class name missing **" if len(args) == 0 else "** instance id missing **")
+            return
+        if args[0] not in self.classes:
+            print("** class doesn't exist **")
+            return
+        key = f"{args[0]}.{args[1]}"
+        if key in storage.all():
+            del storage.all()[key]
+            storage.save()  # Make sure this method is implemented to save changes
+        else:
+            print("** no instance found **")
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
-
