@@ -98,6 +98,22 @@ class HBNBCommand(cmd.Cmd):
         setattr(obj, attribute_name, value)
         obj.save()  # Make sure your object has a save method to update the storage
 
+        def do_destroy(self, arg):
+            """Deletes an instance based on the class name and id."""
+            args = arg.split()
+            if len(args) < 2:
+                print("** class name missing **" if len(args) == 0 else "** instance id missing **")
+                return
+            if args[0] not in self.classes:
+                print("** class doesn't exist **")
+                return
+            key = f"{args[0]}.{args[1]}"
+            if key in storage.all():
+                del storage.all()[key]
+                storage.save()  # Make sure this method is implemented to save changes
+            else:
+                print("** no instance found **")
+
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
 
