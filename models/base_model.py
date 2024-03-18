@@ -9,12 +9,13 @@ import uuid
 from datetime import datetime
 import models
 
+
 class BaseModel:
     """
     The BaseModel class from which future classes will be derived.
     It defines common attributes/methods for other classes.
     """
-    
+
     def __init__(self, *args, **kwargs):
         """
         Initialize a new BaseModel instance.
@@ -31,9 +32,11 @@ class BaseModel:
 
     def _set_attributes_from_kwargs(self, kwargs):
         """
-        Set attributes for an instance based on a dictionary of key-value pairs.
+        Set attributes for an instance
+        based on a dictionary of key-value pairs.
         Args:
-            kwargs (dict): A dictionary of key-value pairs to set as attributes.
+            kwargs (dict): A dictionary of
+            key-value pairs to set as attributes.
         """
         for key, value in kwargs.items():
             if key in ['created_at', 'updated_at']:
@@ -58,7 +61,8 @@ class BaseModel:
     def to_dict(self):
         """
         Returns a dictionary containing all keys/values of the instance.
-        This method will be the first piece of the serialization/deserialization process.
+        This method will be the first piece of
+        the serialization/deserialization process.
         """
         my_dict = self.__dict__.copy()
         my_dict['__class__'] = self.__class__.__name__
